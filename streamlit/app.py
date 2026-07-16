@@ -1,184 +1,261 @@
 import streamlit as st
-import pandas as pd
-import joblib
+
+st.set_page_config(
+    page_title="Medical Appointment Dashboard",
+    page_icon="🏥",
+    layout="wide"
+)
 from pathlib import Path
 
-# -----------------------------
-# Page Configuration
-# -----------------------------
-st.set_page_config(
-    page_title="Medical Appointment Prediction",
-    page_icon="🏥",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-# -----------------------------
-# Load CSS
-# -----------------------------
 css_path = Path(__file__).parent / "style.css"
 
-if css_path.exists():
-    with open(css_path) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+with open(css_path) as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+st.markdown("""
+<div class="hero">
 
-# -----------------------------
-# Load Model
-# -----------------------------
-model_path = Path(__file__).parent.parent / "model" / "random_forest_model.pkl"
+<div>
 
-rf = joblib.load(model_path)
-
-# -----------------------------
-# Sidebar
-# -----------------------------
-st.sidebar.title("🏥 Medical Dashboard")
-
-st.sidebar.markdown("---")
-
-st.sidebar.success("Model : Random Forest")
-
-st.sidebar.info("Accuracy : 71.06%")
-
-st.sidebar.info("ROC AUC : 0.749")
-
-st.sidebar.info("Cross Validation : 71%")
-
-st.sidebar.markdown("---")
-
-st.sidebar.write("### 👩‍💻 Developer")
-
-st.sidebar.write("Anushka Tiwari")
-
-# -----------------------------
-# Header
-# -----------------------------
-st.markdown(
-"""
-<div class="header">
-
-<h1>🏥 Medical Appointment No-Show Prediction</h1>
+<h1>🏥 Medical Appointment Dashboard</h1>
 
 <p>
-Predict whether a patient is likely to attend
-or miss the medical appointment using
-Machine Learning.
+Predict patient attendance and forecast appointment demand
+using <b>Random Forest</b> and <b>ARIMA</b>.
 </p>
 
 </div>
-""",
-unsafe_allow_html=True
-)
-st.markdown("---")
-col1, col2 = st.columns(2)
+
+<div class="status">
+
+🟢 AI Ready
+
+</div>
+
+</div>
+""", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+
+col1, col2, col3, col4 = st.columns(4)
+
 with col1:
+    st.markdown("""
+    <div class="card">
+        <div class="icon">👥</div>
+        <h2>109,593</h2>
+        <p>Total Patients</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.subheader("👤 Patient Information")
-
-    age = st.number_input(
-        "Age",
-        min_value=0,
-        max_value=110,
-        value=25
-    )
-
-    gender = st.selectbox(
-        "Gender",
-        ["Female","Male","Other"]
-    )
-
-    appointment_time = st.number_input(
-        "Appointment Time (Hour)",
-        min_value=0,
-        max_value=23,
-        value=10
-    )
-
-    appointment_shift = st.selectbox(
-        "Appointment Shift",
-        ["Morning","Afternoon"]
-    )
-
-    appointment_month = st.slider(
-        "Appointment Month",
-        1,
-        12,
-        6
-    )
 with col2:
+    st.markdown("""
+    <div class="card">
+        <div class="icon">🧠</div>
+        <h2>31</h2>
+        <p>Features</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.subheader("❤️ Medical Information")
+with col3:
+    st.markdown("""
+    <div class="card">
+        <div class="icon">❌</div>
+        <h2>20.4%</h2>
+        <p>No Show Rate</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    hipertension = st.checkbox("Hypertension")
+with col4:
+    st.markdown("""
+    <div class="card">
+        <div class="icon">🎯</div>
+        <h2>71.06%</h2>
+        <p>Model Accuracy</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    diabetes = st.checkbox("Diabetes")
+st.markdown("<br>", unsafe_allow_html=True)
 
-    alcoholism = st.checkbox("Alcoholism")
+st.markdown("""
+<div class="overview">
 
-    handcap = st.checkbox("Handicap")
+<h2>📋 Project Overview</h2>
 
-    scholarship = st.checkbox("Scholarship")
+<p>
+This dashboard predicts whether a patient is likely to attend or miss a medical
+appointment using a <b>Random Forest Classifier</b>. It also forecasts future
+appointment demand using the <b>ARIMA Time Series Model</b>.
+</p>
 
-    sms = st.checkbox("SMS Received")
-st.markdown("---")
+<div class="overview-grid">
 
-st.subheader("🌦 Weather Information")
+<div>
+<h4>🎯 Objective</h4>
+<p>Reduce patient no-shows and improve hospital resource planning.</p>
+</div>
 
-c1, c2 = st.columns(2)
-with c1:
+<div>
+<h4>🤖 Machine Learning</h4>
+<p>Random Forest Classifier</p>
+</div>
 
-    avg_temp = st.number_input(
-        "Average Temperature",
-        value=25.0
+<div>
+<h4>📈 Forecasting</h4>
+<p>ARIMA (1,0,1)</p>
+</div>
+
+<div>
+<h4>📊 Dataset</h4>
+<p>109,593 Medical Appointments</p>
+</div>
+
+</div>
+
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+left, right = st.columns([2,1], gap="large")
+
+# ---------------- LEFT SIDE ---------------- #
+
+with left:
+
+    st.markdown("""
+    <div class="section-card">
+    <h2>🤖 Appointment Prediction</h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    c1, c2 = st.columns(2)
+
+    with c1:
+
+        age = st.number_input(
+            "Age",
+            0,
+            110,
+            25
+        )
+
+        gender = st.selectbox(
+            "Gender",
+            ["Female","Male"]
+        )
+
+        appointment_time = st.slider(
+            "Appointment Time",
+            0,
+            23,
+            10
+        )
+
+        appointment_month = st.selectbox(
+            "Appointment Month",
+            list(range(1,13))
+        )
+
+    with c2:
+
+        appointment_shift = st.selectbox(
+            "Appointment Shift",
+            ["Morning","Afternoon"]
+        )
+
+        hipertension = st.checkbox("Hypertension")
+
+        diabetes = st.checkbox("Diabetes")
+
+        alcoholism = st.checkbox("Alcoholism")
+
+        sms = st.checkbox("SMS Received")
+
+    st.markdown("### 🌦 Weather Information")
+
+    w1, w2 = st.columns(2)
+
+    with w1:
+
+        avg_temp = st.number_input(
+            "Average Temperature",
+            value=25.0
+        )
+
+        avg_rain = st.number_input(
+            "Average Rainfall",
+            value=0.0
+        )
+
+    with w2:
+
+        max_temp = st.number_input(
+            "Maximum Temperature",
+            value=30.0
+        )
+
+        max_rain = st.number_input(
+            "Maximum Rainfall",
+            value=0.0
+        )
+
+    predict = st.button(
+        "🔍 Predict Appointment",
+        use_container_width=True
     )
 
-    avg_rain = st.number_input(
-        "Average Rain",
-        value=0.0
-    )
+# ---------------- RIGHT SIDE ---------------- #
 
-    rain_before = st.checkbox(
-        "Rainy Day Before"
-    )
+with right:
 
-    rain_intensity = st.selectbox(
-        "Rain Intensity",
-        [
-            "no_rain",
-            "weak",
-            "moderate",
-            "heavy"
-        ]
-    )
-with c2:
+    st.markdown("""
+    <div class="prediction-card">
 
-    max_temp = st.number_input(
-        "Maximum Temperature",
-        value=30.0
-    )
+    <h2>🤖 Prediction Result</h2>
 
-    max_rain = st.number_input(
-        "Maximum Rain",
-        value=0.0
-    )
+    <br>
 
-    storm_before = st.checkbox(
-        "Storm Day Before"
-    )
+    <h3 style="color:#64748B;">
+    Waiting for Prediction...
+    </h3>
 
-    heat = st.selectbox(
-        "Heat Intensity",
-        [
-            "cold",
-            "mild",
-            "warm",
-            "heavy_cold",
-            "heavy_warm"
-        ]
-    )
-st.markdown("---")
+    <p>
+    Fill the patient information and click
+    <b>Predict Appointment</b>.
+    </p>
 
-predict = st.button(
-    "🔍 Predict Appointment Status",
-    use_container_width=True
-)
+    </div>
+    """, unsafe_allow_html=True)
+
+[
+'appointment_time',
+'gender',
+'appointment_shift',
+'age',
+'under_12_years_old',
+'over_60_years_old',
+'patient_needs_companion',
+'average_temp_day',
+'average_rain_day',
+'max_temp_day',
+'max_rain_day',
+'rainy_day_before',
+'storm_day_before',
+'rain_intensity',
+'heat_intensity',
+'Hipertension',
+'Diabetes',
+'Alcoholism',
+'Handcap',
+'Scholarship',
+'SMS_received',
+'appointment_month',
+'specialty_enf',
+'specialty_occupational therapy',
+'specialty_pedagogo',
+'specialty_physiotherapy',
+'specialty_psychotherapy',
+'specialty_sem especialidade',
+'specialty_speech therapy',
+'disability_intellectual',
+'disability_motor'
+]
